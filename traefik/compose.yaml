@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v3.1.2
+    command:
+      - "--configFile=/traefik.yaml"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5000:5000/tcp"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.yaml:/traefik.yaml:ro"
+      - "./dynamic_conf/traefik_dynamic.yaml:/dynamic_conf/traefik_dynamic.yaml:ro"
+      - "./acme.json:/acme.json"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - public
+
+networks:
+  public:
+    external: true

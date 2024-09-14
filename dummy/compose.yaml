@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  dummy:
+    image: python:3.12-alpine
+    command: "python -m http.server -d /public/"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - "./index.html:/public/index.html:ro"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.dummy.loadbalancer.server.port=8000"
+        - "traefik.http.routers.dummy.entrypoints=web"
+        - "traefik.http.routers.dummy.rule=HostRegexp(`^(www\\.)?dummy\\.oliverlambson\\.com(\\.localhost)?$$`)"
+        # TODO: https
+        # - "traefik.http.routers.dummy.entrypoints=websecure" # 'websecure' defined in traefik config
+        # - "traefik.http.routers.dummy.tls.certresolver=letsencrypt"
+        # middleware for redirecting to www, with redirectregex to enforce www
+        # - "traefik.http.routers.dummy.middlewares=redirect-to-www"
+        # - "traefik.http.middlewares.redirect-to-www.redirectregex.regex=^https?://(?:www\\.)?(.+)"
+        # - "traefik.http.middlewares.redirect-to-www.redirectregex.replacement=https://www.$${1}"
+        # - "traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true"
+    networks:
+      - public
+
+networks:
+  public:
+    external: true

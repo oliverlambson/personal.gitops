@@ -1,0 +1,31 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+  dockerregistry:
+    address: ":5000/tcp"
+
+api:
+  dashboard: false
+
+providers:
+  swarm:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+  file:
+    filename: /dynamic_conf/traefik_dynamic.yaml
+    watch: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: oliverlambson@gmail.com
+      storage: acme.json
+      httpChallenge:
+        entryPoint: web
+
+log:
+  level: INFO
+
+accessLog: {}
