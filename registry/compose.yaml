@@ -6,6 +6,7 @@ services:
     environment:
       # TODO: auth
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_HTTP_SECRET: supersecret
     volumes:
       - registry-data:/var/lib/registry
     deploy:
@@ -22,8 +23,15 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.tcp.services.registry.loadbalancer.server.port=5000"
-        - "traefik.tcp.routers.registry.entrypoints=dockerregistry"
-        - "traefik.tcp.routers.registry.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.registry.entrypoints=websecure"
+        - "traefik.tcp.routers.registry.tls.certresolver=letsencrypt"
+        # - "traefik.tcp.routers.registry.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.registry.rule=HostSNIRegexp(`^registry\\.(v2\\.)?oliverlambson\\.com(\\.localhost)?$$`)"
+    healthcheck:
+      test: "wget -qO - http://localhost:5000/v2/ || exit 1"
+      interval: 4s
+      timeout: 2s
+      retries: 5
     networks:
       - public
 

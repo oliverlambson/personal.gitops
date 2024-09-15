@@ -1,10 +1,13 @@
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
   websecure:
     address: ":443"
-  dockerregistry:
-    address: ":5000/tcp"
 
 api:
   dashboard: false
@@ -14,8 +17,9 @@ providers:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
   file:
-    filename: /dynamic_conf/traefik_dynamic.yaml
+    directory: /dynamic_conf/
     watch: true
+    debugLogGeneratedTemplate: true
 
 certificatesResolvers:
   letsencrypt:
@@ -29,3 +33,5 @@ log:
   level: INFO
 
 accessLog: {}
+
+ping: {}

@@ -3,12 +3,13 @@ version: "3.8"
 services:
   traefik:
     image: traefik:v3.1.2
+    environment:
+      FORCE_DEPLOY: "blue"
     command:
       - "--configFile=/traefik.yaml"
     ports:
       - "80:80"
       - "443:443"
-      - "5000:5000/tcp"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik.yaml:/traefik.yaml:ro"
@@ -25,9 +26,24 @@ services:
       placement:
         constraints:
           - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.routers.traefik.rule=HostRegexp(`traefik\\..*$$`)"
+        - "traefik.http.routers.traefik.entrypoints=websecure" # 'websecure' defined in traefik config
+        - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+    healthcheck:
+      test: "wget -qO - http://localhost:8080/ping || exit 1"
+      interval: 4s
+      timeout: 2s
+      retries: 5
     networks:
       - public
+      - loki
 
 networks:
   public:
+    external: true
+  loki:
     external: true

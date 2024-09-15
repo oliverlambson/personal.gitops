@@ -1,0 +1,11 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /dynamic_conf/certs/_wildcard.com.localhost.pem
+        keyFile: /dynamic_conf/certs/_wildcard.com.localhost-key.pem
+  certificates:
+    - certFile: /dynamic_conf/certs/_wildcard.oliverlambson.com.localhost.pem
+      keyFile: /dynamic_conf/certs/_wildcard.oliverlambson.com.localhost-key.pem
+    - certFile: /dynamic_conf/certs/_wildcard.v2.oliverlambson.com.localhost.pem
+      keyFile: /dynamic_conf/certs/_wildcard.v2.oliverlambson.com.localhost-key.pem

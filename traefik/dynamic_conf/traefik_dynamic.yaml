@@ -1,7 +1,16 @@
 http:
   middlewares:
-    # https-redirect:
-    #   redirectScheme:
-    #     scheme: https
+    https-redirect:
+      redirectScheme:
+        scheme: https
     gzip-compress:
       compress: {}
+tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: letsencrypt
+        domain:
+          main: "*.v2.oliverlambson.com"
+          sans:
+            - "*.dev.v2.oliverlambson.com"

@@ -1,0 +1,80 @@
+version: "3.8"
+
+services:
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - "./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/ds.yaml"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+        - "traefik.http.routers.grafana.entrypoints=websecure"
+        - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.grafana.rule=HostRegexp(`^grafana\\..*$$`)"
+    healthcheck:
+      test: "curl -f localhost:3000/api/health || exit 1"
+    networks:
+      - public
+      - loki
+
+  loki:
+    image: grafana/loki:3.1.1
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - "./loki-config.yaml:/etc/loki/local-config.yaml:ro"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+    healthcheck:
+      test: "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"
+    networks:
+      - loki
+
+  alloy:
+    image: grafana/alloy:v1.3.1
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./config.alloy:/etc/alloy/config.alloy"
+    command:
+      - run
+      - "--storage.path=/var/lib/alloy/data"
+      - "/etc/alloy/config.alloy"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: stop-first
+    networks:
+      - loki
+      - private
+
+volumes:
+  registry-data:
+
+networks:
+  public:
+    external: true
+  private:
+    external: true
+  loki:
+    external: true

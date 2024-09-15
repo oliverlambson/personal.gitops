@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  traefik:
+    volumes:
+      - "./local/dynamic_conf/certs/:/dynamic_conf/certs/:ro"
+      - "./local/dynamic_conf/traefik_dynamic.dev.yaml:/dynamic_conf/traefik_dynamic.dev.yaml:ro"
