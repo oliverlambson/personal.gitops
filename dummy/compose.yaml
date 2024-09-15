@@ -26,7 +26,31 @@ services:
         # - "traefik.http.routers.dummy.tls.domains[0].sans=dummy.dev.v2.oliverlambson.com"
     networks:
       - public
+      - loki
+
+  dummy-logmaker:
+    image: python:3.12-alpine
+    command: "python /app/script.py"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - "./logmaker.py:/app/script.py:ro"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+    networks:
+      - private
+      - loki
 
 networks:
   public:
+    external: true
+  private:
+    external: true
+  loki:
     external: true

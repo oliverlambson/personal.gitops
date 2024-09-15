@@ -1,0 +1,86 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// remove leading __meta_docker_ from docker labels
+discovery.relabel "containers_map_private" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    action = "labelmap"
+    regex  = "__meta_docker_(.*)"
+  }
+}
+
+discovery.relabel "containers_map" {
+  targets = discovery.relabel.containers_map_private.output
+
+	// outputs: "swarm_service_name", "stack_task_id", etc
+  rule {
+    action = "labelmap"
+    regex  = "container_label_com_docker_(.*)"
+  }
+}
+
+discovery.relabel "containers_drop" {
+  targets = discovery.relabel.containers_map.output
+
+	// remapped
+  rule {
+    action = "labeldrop"
+    regex  = "container_label_com_docker_.*"
+  }
+	// globs
+  rule {
+    action = "labeldrop"
+    regex  = ".*traefik.*"
+  }
+  rule {
+    action = "labeldrop"
+    regex  = ".*org.opencontainers.*"
+  }
+	// exact
+  rule {
+    action = "labeldrop"
+    regex  = "container_label_maintainer"
+  }
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.containers_drop.output
+  forward_to = [loki.process.containers.receiver]
+}
+
+loki.process "containers" {
+  forward_to = [loki.write.sink.receiver]
+
+  stage.pack {
+    labels = [
+      "container_id",
+      "container_name",
+      "container_network_mode",
+      "network_id",
+      "network_name",
+      "network_ingress",
+      "network_internal",
+      "network_scope",
+      "network_ip",
+      "port_private",
+      "port_public",
+      "port_public_ip",
+    ]
+  }
+}
+
+
+loki.write "sink" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}

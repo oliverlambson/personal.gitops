@@ -1,0 +1,22 @@
+apiVersion: 1
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false
+    # fix for live tail: need to upgrade to websocket connection
+    # - https://github.com/grafana/grafana/issues/22905#issuecomment-1016264701
+    jsonData:
+      httpHeaderName1: "Connection"
+      httpHeaderName2: "Upgrade"
+    secureJsonData:
+      httpHeaderValue1: "Upgrade"
+      httpHeaderValue2: "websocket"
+    # NOTE: live tail didn't work when https was using invalid certs
+    # - could be due to ws vs wss tls confusion?
+    # - https://stackoverflow.com/questions/75246354/cannot-connect-to-websocket-server-app-inside-docker-compose

@@ -30,7 +30,7 @@ certificatesResolvers:
         entryPoint: web
 
 log:
-  level: INFO
+  level: INFO # DEBUG
 
 accessLog: {}
 
