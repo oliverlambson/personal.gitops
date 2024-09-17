@@ -18,10 +18,11 @@ services:
         order: start-first
       labels:
         - "traefik.enable=true"
-        - "traefik.http.services.dummy.loadbalancer.server.port=8000"
+        - "traefik.http.routers.dummy.middlewares=allow-public@file"
         - "traefik.http.routers.dummy.rule=HostRegexp(`dummy\\..*$$`)"
-        - "traefik.http.routers.dummy.entrypoints=websecure" # 'websecure' defined in traefik config
+        - "traefik.http.routers.dummy.entrypoints=websecure"
         - "traefik.http.routers.dummy.tls.certresolver=letsencrypt"
+        - "traefik.http.services.dummy.loadbalancer.server.port=8000"
         # - "traefik.http.routers.dummy.tls.domains[0].main=dummy.v2.oliverlambson.com"
         # - "traefik.http.routers.dummy.tls.domains[0].sans=dummy.dev.v2.oliverlambson.com"
     networks:

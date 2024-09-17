@@ -19,10 +19,11 @@ services:
         order: stop-first
       labels:
         - "traefik.enable=true"
-        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+        - "traefik.http.routers.grafana.middlewares=allow-private@file,gzip-compress@file"
+        - "traefik.http.routers.grafana.rule=HostRegexp(`^grafana\\..*$$`)"
         - "traefik.http.routers.grafana.entrypoints=websecure"
         - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.grafana.rule=HostRegexp(`^grafana\\..*$$`)"
+        - "traefik.http.services.grafana.loadbalancer.server.port=3000"
     healthcheck:
       test: "curl -f localhost:3000/api/health || exit 1"
     networks:

@@ -8,6 +8,7 @@ this is the central docker swarm setup for my personal VPS deployment setup
   - [ ] traefik
     - [x] localhost TLS
     - [ ] base hostname with go template? (e.g. dev.oliverlambson.com vs oliverlambson.com)
+    - [x] private/public services (with ipAllowList middleware)
   - [ ] registry
     - [x] basic
     - [ ] auth

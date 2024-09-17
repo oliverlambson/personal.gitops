@@ -5,12 +5,12 @@ http:
         scheme: https
     gzip-compress:
       compress: {}
-tls:
-  stores:
-    default:
-      defaultGeneratedCert:
-        resolver: letsencrypt
-        domain:
-          main: "*.v2.oliverlambson.com"
-          sans:
-            - "*.dev.v2.oliverlambson.com"
+    allow-private:
+      ipAllowList:
+        sourceRange:
+          - "127.0.0.1/32"
+          - "10.0.0.0/8" # example private network range
+    allow-public:
+      ipAllowList:
+        sourceRange:
+          - "0.0.0.0/0"
