@@ -29,25 +29,6 @@ services:
       - public
       - loki
 
-  dummy-logmaker:
-    image: python:3.12-alpine
-    command: "python /app/script.py"
-    environment:
-      - PYTHONUNBUFFERED=1
-    volumes:
-      - "./logmaker.py:/app/script.py:ro"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      update_config:
-        parallelism: 1
-        delay: 10s
-        order: start-first
-    networks:
-      - private
-      - loki
-
 networks:
   public:
     external: true
