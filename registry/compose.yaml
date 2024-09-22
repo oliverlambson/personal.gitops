@@ -6,7 +6,7 @@ services:
     environment:
       # TODO: auth
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
-      REGISTRY_HTTP_SECRET: supersecret
+      REGISTRY_HTTP_SECRET: ${SECRET}
     volumes:
       - registry-data:/var/lib/registry
     deploy:
@@ -17,16 +17,13 @@ services:
         parallelism: 1
         delay: 10s
         order: start-first
-      placement:
-        constraints:
-          - node.role == manager
       labels:
         - "traefik.enable=true"
-        - "traefik.tcp.services.registry.loadbalancer.server.port=5000"
-        - "traefik.tcp.routers.registry.entrypoints=websecure"
-        - "traefik.tcp.routers.registry.tls.certresolver=letsencrypt"
-        # - "traefik.tcp.routers.registry.rule=HostSNI(`*`)"
-        - "traefik.tcp.routers.registry.rule=HostSNIRegexp(`^registry\\.(v2\\.)?oliverlambson\\.com(\\.localhost)?$$`)"
+        - "traefik.http.services.registry.loadbalancer.server.port=5000"
+        - "traefik.http.routers.registry.entrypoints=websecure"
+        - "traefik.http.routers.registry.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.registry.rule=Host(`registry.oliverlambson.com`) || HostRegexp(`^registry\\..*$$`)"
+        - "traefik.http.middlewares.test-auth.basicauth.users=${USERS}"
     healthcheck:
       test: "wget -qO - http://localhost:5000/v2/ || exit 1"
       interval: 4s
@@ -34,10 +31,13 @@ services:
       retries: 5
     networks:
       - public
+      - loki
 
 volumes:
   registry-data:
 
 networks:
   public:
+    external: true
+  loki:
     external: true

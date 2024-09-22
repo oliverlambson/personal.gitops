@@ -26,4 +26,5 @@ tls:
             - "dummy.oliverlambson.com"
             - "traefik.oliverlambson.com"
             - "dev.oliverlambson.com"
+            - "registry.oliverlambson.com"
             - "chat.oliverlambson.com"
