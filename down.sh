@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 docker stack rm registry
+docker stack rm chat
 docker stack rm personal-site
 docker stack rm dummy
 docker stack rm observability

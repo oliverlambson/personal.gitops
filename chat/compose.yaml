@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  chat:
+    image: ghcr.io/open-webui/open-webui:latest
+    environment:
+      ENABLE_SIGNUP: "false"
+      ENABLE_OLLAMA_API: "false"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AUDIO_STT_ENGINE: openai
+      AUDIO_TTS_ENGINE: openai
+      ENABLE_IMAGE_GENERATION: "true"
+      IMAGE_GENERATION_ENGINE: openai
+      DEFAULT_MODELS: gpt-4o
+    volumes:
+      - "open-webui:/app/backend/data"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.chat.middlewares=allow-public@file"
+        - "traefik.http.routers.chat.rule=Host(`chat.oliverlambson.com`) || HostRegexp(`chat\\..*$$`)"
+        - "traefik.http.routers.chat.entrypoints=websecure"
+        - "traefik.http.routers.chat.tls.certresolver=letsencrypt"
+        - "traefik.http.services.chat.loadbalancer.server.port=8080"
+        - "traefik.http.routers.chat.tls.domains[0].main=chat.oliverlambson.com"
+    networks:
+      - public
+      - loki
+
+volumes:
+  open-webui:
+
+networks:
+  public:
+    external: true
+  private:
+    external: true
+  loki:
+    external: true

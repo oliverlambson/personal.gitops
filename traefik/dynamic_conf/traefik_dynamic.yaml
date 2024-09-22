@@ -26,3 +26,4 @@ tls:
             - "dummy.oliverlambson.com"
             - "traefik.oliverlambson.com"
             - "dev.oliverlambson.com"
+            - "chat.oliverlambson.com"
