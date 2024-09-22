@@ -1,9 +1,0 @@
-tls:
-  stores:
-    default:
-      defaultGeneratedCert:
-        resolver: letsencrypt
-        domain:
-          main: "*.v2.oliverlambson.com"
-          sans:
-            - "*.dev.v2.oliverlambson.com"

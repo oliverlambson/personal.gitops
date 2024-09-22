@@ -41,3 +41,5 @@ registry is the central docker image repository for the docker swarm setup, all 
 gha workflows in my app repos will build and push images to the registry
 
 generate localhost certs with mkcert
+
+generate .env files using `./secrets.sh` (uses one password cli with the .env.op templates)

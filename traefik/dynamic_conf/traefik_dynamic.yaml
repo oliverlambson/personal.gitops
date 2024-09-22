@@ -9,8 +9,20 @@ http:
       ipAllowList:
         sourceRange:
           - "127.0.0.1/32"
+          - "127.0.0.1/32"
           - "10.0.0.0/8" # example private network range
     allow-public:
       ipAllowList:
         sourceRange:
           - "0.0.0.0/0"
+tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: letsencrypt
+        domain:
+          main: "www.oliverlambson.com"
+          sans:
+            - "dummy.oliverlambson.com"
+            - "traefik.oliverlambson.com"
+            - "dev.oliverlambson.com"

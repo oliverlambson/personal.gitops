@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 docker stack rm registry
+docker stack rm personal-site
 docker stack rm dummy
 docker stack rm observability
 docker stack rm traefik

@@ -29,11 +29,12 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.traefik.middlewares=allow-private@file"
-        - "traefik.http.routers.traefik.rule=HostRegexp(`traefik\\..*$$`)"
+        - "traefik.http.routers.traefik.rule=Host(`traefik.oliverlambson.com`) || HostRegexp(`traefik\\..*$$`)"
         - "traefik.http.routers.traefik.entrypoints=websecure"
         - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
         - "traefik.http.routers.traefik.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "traefik.http.routers.traefik.tls.domains[0].main=traefik.oliverlambson.com"
     healthcheck:
       test: "wget -qO - http://localhost:8080/ping || exit 1"
       interval: 4s
