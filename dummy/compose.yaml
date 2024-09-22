@@ -19,7 +19,7 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.dummy.middlewares=allow-public@file"
-        - "traefik.http.routers.dummy.rule=Host(`dummy.oliverlambson.com`) || HostRegexp(`dummy\\..*$$`)"
+        - "traefik.http.routers.dummy.rule=Host(`dummy.oliverlambson.com`) || HostRegexp(`dummy\\.?*$$`)"
         - "traefik.http.routers.dummy.entrypoints=websecure"
         - "traefik.http.routers.dummy.tls.certresolver=letsencrypt"
         - "traefik.http.services.dummy.loadbalancer.server.port=8000"

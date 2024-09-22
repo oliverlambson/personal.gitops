@@ -20,7 +20,7 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.grafana.middlewares=allow-private@file,gzip-compress@file"
-        - "traefik.http.routers.grafana.rule=HostRegexp(`^grafana\\..*$$`)"
+        - "traefik.http.routers.grafana.rule=HostRegexp(`^grafana\\.?*$$`)"
         - "traefik.http.routers.grafana.entrypoints=websecure"
         - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
