@@ -1,0 +1,9 @@
+.:53 {
+    errors
+    log
+    hosts {
+        10.128.1.10    *.oliverlambson.com
+        fallthrough
+    }
+    forward . 1.1.1.1
+}
