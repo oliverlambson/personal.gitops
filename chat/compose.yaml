@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   chat:
-    image: ghcr.io/open-webui/open-webui:latest
+    image: ghcr.io/open-webui/open-webui:latest@sha256:b2262995f1dceed066324f4dbcca6f0971a197a66cfb5c55bfbe362242d4c1d2
     environment:
       ENABLE_SIGNUP: "false"
       ENABLE_OLLAMA_API: "false"
