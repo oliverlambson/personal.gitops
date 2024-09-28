@@ -14,4 +14,8 @@ if [[ "$service" == */ ]]; then
 fi
 
 rsync -av -e ssh --exclude='.env' $service/ ollie@oliverlambson.com:~/$service/
-ssh ollie@oliverlambson.com "bash -c \"./secrets.sh ~/$service/ && ./generate-config.sh -f ~/$service/compose.yaml | docker stack deploy -d -c - $service\""
+ssh ollie@oliverlambson.com <<EOF
+    ./secrets.sh ~/$service/ && \
+    ./generate-config.sh -f ~/$service/compose.yaml \
+    | docker stack deploy -d -c - $service
+EOF
