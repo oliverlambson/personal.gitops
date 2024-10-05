@@ -72,6 +72,13 @@ generate .env files using `./secrets.sh` (uses one password cli with the .env.op
 
 ```
 personal-gitops
+├── .github
+│   ├── actions
+│   │   └── deploy-stack
+│   │       └── action.yaml
+│   └── workflows
+│       ├── cd-{service}.yaml
+│       └── ...
 ├── bin                        <<- local scripts to manage deployment to server
 │   ├── bootstrap-server         - configure new server from scratch (runs all of bootstrap-server.d/)
 │   ├── run-remote-cmd           - run single bash cmd on server over ssh
