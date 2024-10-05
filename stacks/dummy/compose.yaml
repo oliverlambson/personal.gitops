@@ -6,6 +6,7 @@ services:
     command: "python -m http.server -d /public/"
     environment:
       - PYTHONUNBUFFERED=1
+      - _DEPLOY_BUMP=0
     volumes:
       - "./index.html:/public/index.html:ro"
     deploy:

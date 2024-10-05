@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "dummy/**"
+      - "stacks/dummy/**"
 
 jobs:
   deploy:
