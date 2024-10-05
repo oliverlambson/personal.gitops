@@ -1,0 +1,91 @@
+name: deploy stack
+description: deploy a docker swarm stack to a remote host
+
+inputs:
+  name:
+    description: Name of the stack for deployment
+    required: true
+  directory:
+    description: Directory of the stack (containing compose.yaml, etc.)
+    required: true
+  ssh-user:
+    description: SSH user
+    required: true
+  ssh-host:
+    description: SSH host
+    required: true
+  ssh-private-key:
+    description: SSH private key
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check inputs
+      shell: bash
+      run: |
+        echo "::group::Run info"
+        if [[ "${{ inputs.name }}" == */ ]]; then
+          echo "Error: Stack name should not end with a trailing slash"
+          exit 1
+        fi
+        if [[ "${{ inputs.directory }}" == */ ]]; then
+          echo "Error: Stack directory should not end with a trailing slash"
+          exit 1
+        fi
+        echo "Deploying stack: ${{ inputs.name }}"
+        echo "From directory: ${{ inputs.directory }}"
+        echo "::endgroup::"
+
+    - name: Configure SSH
+      shell: bash
+      run: |
+        echo "::group::Configuring SSH"
+        mkdir -p ~/.ssh/
+        touch ~/.ssh/known_hosts
+
+        echo "Adding SSH_HOST to known hosts"
+        ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+
+        echo "Adding private key to config"
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id
+        chmod 600 ~/.ssh/id
+        cat >>~/.ssh/config <<EOF
+        Host *
+          IdentityFile ~/.ssh/id
+        EOF
+
+        echo "::endgroup::"
+      env:
+        SSH_USER: ${{ inputs.ssh-user }}
+        SSH_HOST: ${{ inputs.ssh-host }}
+        SSH_PRIVATE_KEY: ${{ inputs.ssh-private-key }}
+
+    - name: Sync stack to host
+      shell: bash
+      run: |
+        echo "::group::Syncing stack to host"
+        rsync \
+          -av \
+          -e ssh \
+          --exclude='.env' \
+          --exclude-from="$DIRECTORY/.rsyncignore" \
+          "$DIRECTORY/" \
+          "$SSH_USER@$SSH_HOST:~/stacks/$NAME/"
+        echo "::endgroup::"
+      env:
+        NAME: ${{ inputs.name }}
+        DIRECTORY: ${{ inputs.directory }}
+        SSH_USER: ${{ inputs.ssh-user }}
+        SSH_HOST: ${{ inputs.ssh-host }}
+
+    - name: Deploy stack
+      shell: bash
+      run: |
+        echo "::group::Deploying stack"
+        ssh $SSH_USER@$SSH_HOST 'bash -c' "deploy-stack\ $NAME"
+        echo "::endgroup::"
+      env:
+        NAME: ${{ inputs.name }}
+        SSH_USER: ${{ inputs.ssh-user }}
+        SSH_HOST: ${{ inputs.ssh-host }}
