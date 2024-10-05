@@ -38,7 +38,7 @@ Other deployments are managed in the app repos.
     - [x] makefile deployment with docker save & scp
     - [x] makefile deployment with private registry
     - [ ] cicd
-  - [ ] cicd deployment of personal.gitops?
+  - [x] cicd deployment of personal.gitops?
 - [ ] infra with terraform/pulumi
   - [ ] cloudflare dns
   - [ ] cloudflare r2 object storage (s3 api so [nothing clever](https://grafana.com/docs/loki/latest/configure/storage/#on-premise-deployment-minio-single-store), they just have 10GB free tier)
@@ -50,12 +50,12 @@ Other deployments are managed in the app repos.
 
 ## how to deploy stacks
 
-Each folder is a docker swarm stack.
+See [RUNBOOK.md](./RUNBOOK.md)
 
 Deploy a stack with:
 
 ```sh
-./deploy.sh [STACK]
+bin/stack-deploy [STACK NAME]
 ```
 
 ## the plan
@@ -69,6 +69,8 @@ gha workflows in my app repos will build and push images to the registry
 generate .env files using `./secrets.sh` (uses one password cli with the .env.op templates)
 
 (local testing) generate localhost certs with mkcert
+
+## repo overview
 
 ```
 personal-gitops
@@ -116,9 +118,10 @@ personal-gitops
 │   └── {service}                - any other service
 │       ├── .rsyncignore
 │       └── compose.yaml
-├── swarm                      <- swarm initialisation scripts
-│   ├── 0-init.sh
-│   └── 1-networks.sh
+├── swarm                     <<- swarm initialisation scripts
+│   ├── 0-init.sh               - create the swarm
+│   ├── 1-networks.sh           - create overlay networks
+│   └── down.sh                 - kill all stacks, remove networks, exit swarm
 ├── Makefile
 ├── README.md
 └── RUNBOOK.md
