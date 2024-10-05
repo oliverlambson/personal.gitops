@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+	echo "Error: No script provided"
+	exit 1
+fi
+
+ssh ollie@oliverlambson.com 'bash -s' <"$1"

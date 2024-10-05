@@ -41,8 +41,10 @@ services:
       timeout: 2s
       retries: 5
     networks:
-      - public
-      - private
+      public:
+        ipv4_address: 10.128.0.10
+      private:
+        ipv4_address: 10.128.1.10
 
 networks:
   public:

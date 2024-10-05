@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+	echo "Error: No stack provided"
+	exit 1
+fi
+
+stack=$1
+if [[ "$stack" == */ ]]; then
+	echo "Error: Stack name should not end with a trailing slash"
+	exit 1
+fi
+
+bin/sync-stack "$stack"
+bin/run-remote-cmd "deploy-stack\ $stack"

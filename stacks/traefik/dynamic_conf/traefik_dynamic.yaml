@@ -8,9 +8,9 @@ http:
     allow-private:
       ipAllowList:
         sourceRange:
-          - "127.0.0.1/32"
-          - "127.0.0.1/32"
-          - "10.0.0.0/8" # example private network range
+          - "127.0.0.1/32" # localhost
+          - "10.0.0.0/16" # private network
+          - "10.13.13.0/24" # VPN
     allow-public:
       ipAllowList:
         sourceRange:

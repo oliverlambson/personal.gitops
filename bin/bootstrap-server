@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [ ! -f bootstrap-server.d/.env ]; then
+	echo "No .env in bootstrap-server.d/, did you run 'make secrets'?"
+	exit 1
+fi
+
+set -a
+source bootstrap-server.d/.env
+set +a
+
+# set $env to xargs of .env but escape spaces in the values
+# e.g. ASDF="a b" should become ASDF="a\ b"
+# so that we can pass the vals ot ssh like so:
+# ssh $env 'bash -c' <"$script"
+env="$(grep -v '^#' bootstrap-server.d/.env | sed 's/\s*=\s*/=/g' | sed 's/ /\\ /g' | xargs)"
+
+for script in bootstrap-server.d/0-root/*; do
+	if [ -f "$script" ] && [ -x "$script" ]; then
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		echo "Running $script on server as root"
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		ssh root@oliverlambson.com "$env" 'bash -s' <"$script"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo " complete <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	fi
+done
+
+for script in bootstrap-server.d/1-user/*; do
+	if [ -f "$script" ] && [ -x "$script" ]; then
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		echo "Running $script on server as ollie"
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		ssh ollie@oliverlambson.com "$env" 'bash -s' <"$script"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo " complete <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	fi
+done
+
+for script in bootstrap-server.d/2-sync/*; do
+	if [ -f "$script" ] && [ -x "$script" ]; then
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		echo "Running $script on client"
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		"$script"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo " complete <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+		echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	fi
+done

@@ -4,7 +4,7 @@ services:
   chat:
     image: ghcr.io/open-webui/open-webui:latest@sha256:b2262995f1dceed066324f4dbcca6f0971a197a66cfb5c55bfbe362242d4c1d2
     environment:
-      ENABLE_SIGNUP: "false"
+      ENABLE_SIGNUP: "false" # change to false after admin created
       ENABLE_OLLAMA_API: "false"
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       AUDIO_STT_ENGINE: openai

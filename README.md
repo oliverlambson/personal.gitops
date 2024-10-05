@@ -69,3 +69,50 @@ gha workflows in my app repos will build and push images to the registry
 generate .env files using `./secrets.sh` (uses one password cli with the .env.op templates)
 
 (local testing) generate localhost certs with mkcert
+
+```
+personal-gitops
+├── bin                         <- local scripts to manage deployment to server
+│   ├── bootstrap-server
+│   ├── run-remote-cmd
+│   ├── run-remote-script
+│   ├── stack-deploy
+│   └── sync-stack
+├── bootstrap-server.d          <- local scripts to configure new server
+│   ├── 0-root
+│   │   ├── 0-user.sh
+│   │   └── 1-ssh.sh
+│   ├── 1-user
+│   │   ├── 0-docker.sh
+│   │   └── 1-one-password.sh
+│   └── 2-sync
+│       ├── 0-secrets.sh
+│       ├── 1-rc.sh
+│       └── 2-bin.sh
+├── server
+│   ├── bin                     <- server-side scripts (~/bin)
+│   │   ├── deploy-stack
+│   │   ├── op-dotenv
+│   │   └── render-compose
+│   └── home                    <- server-side bash config
+│       ├── .bashrc
+│       └── .profile
+├── stacks                      <- swarm stacks
+│   ├── registry
+│   │   ├── .rsyncignore
+│   │   └── compose.yaml
+│   ├── traefik
+│   │   ├── .rsyncignore
+│   │   ├── compose.yaml
+│   │   ├── deploy-pre.sh
+│   │   └── ...
+│   └── {service}
+│       ├── .rsyncignore
+│       └── compose.yaml
+├── swarm                      <- swarm initialisation scripts
+│   ├── 0-init.sh
+│   └── 1-networks.sh
+├── Makefile
+├── README.md
+└── RUNBOOK.md
+```

@@ -22,7 +22,7 @@ services:
         - "traefik.http.services.registry.loadbalancer.server.port=5000"
         - "traefik.http.routers.registry.entrypoints=websecure"
         - "traefik.http.routers.registry.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.registry.rule=Host(`registry.oliverlambson.com`) || HostRegexp(`^registry\\.?*$$`)"
+        - "traefik.http.routers.registry.rule=Host(`registry.oliverlambson.com`) || HostRegexp(`^registry(\\..+)?$`)"
         - "traefik.http.middlewares.test-auth.basicauth.users=${USERS}"
     healthcheck:
       test: "wget -qO - http://localhost:5000/v2/ || exit 1"

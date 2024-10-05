@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+	cat <<EOF
+Usage $0 [stack-name]
+
+Deploys a docker swarm stack
+EOF
+}
+
+if [ $# -eq 0 ]; then
+	usage
+	exit 1
+fi
+
+case "${1:-.}" in
+-h | --help)
+	usage
+	exit 0
+	;;
+-*)
+	echo Unrecognised option: $1
+	exit 1
+	;;
+*) ;;
+esac
+
+stack="$1"
+
+if [ ! -d "$HOME/stacks/$stack" ]; then
+	echo "Error: Stack directory '$HOME/stacks/$stack' does not exist."
+	exit 1
+fi
+
+if [ ! -f "$HOME/stacks/$stack/compose.yaml" ]; then
+	echo "Error: compose.yaml file not found in '$HOME/stacks/$stack'."
+	exit 1
+fi
+
+echo "Deploying $stack >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+d="$HOME/stacks/$stack"
+
+op-dotenv .
+if [ -f "$d/deploy-pre.sh" ]; then
+	if [ ! -x "$d/deploy-pre.sh" ]; then
+		echo "Error: $d/deploy-pre.sh is not executable."
+		exit 1
+	fi
+	./deploy-pre.sh
+fi
+render-compose -f "$d/compose.yaml" | docker stack deploy -d=false -c - "$stack"
+
+echo "Complete <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
