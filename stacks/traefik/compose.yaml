@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: traefik:v3.1.2
+    image: traefik:v3.1.5
     environment:
       FORCE_DEPLOY: "blue"
     command:
