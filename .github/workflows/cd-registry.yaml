@@ -1,0 +1,23 @@
+name: deploy:registry
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "stacks/registry/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy Stack
+        uses: ./.github/actions/deploy-stack
+        with:
+          name: registry
+          directory: stacks/registry
+          ssh-user: ${{ secrets.VPS_SSH_USER }}
+          ssh-host: ${{ secrets.VPS_SSH_HOST }}
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
