@@ -72,41 +72,41 @@ generate .env files using `./secrets.sh` (uses one password cli with the .env.op
 
 ```
 personal-gitops
-├── bin                         <- local scripts to manage deployment to server
-│   ├── bootstrap-server
-│   ├── run-remote-cmd
-│   ├── run-remote-script
-│   ├── stack-deploy
-│   └── sync-stack
-├── bootstrap-server.d          <- local scripts to configure new server
-│   ├── 0-root
+├── bin                        <<- local scripts to manage deployment to server
+│   ├── bootstrap-server         - configure new server from scratch (runs all of bootstrap-server.d/)
+│   ├── run-remote-cmd           - run single bash cmd on server over ssh
+│   ├── run-remote-script        - run bash script on server over ssh
+│   ├── stack-deploy             - deploy a specific stack (in stacks/) to server
+│   └── sync-stack               - sync spec in stacks/$stack to server
+├── bootstrap-server.d         <<- local scripts to configure new server
+│   ├── 0-root                   - set up user & harden ssh (run as root)
 │   │   ├── 0-user.sh
 │   │   └── 1-ssh.sh
-│   ├── 1-user
+│   ├── 1-user                   - install needed programmes (run as user)
 │   │   ├── 0-docker.sh
 │   │   └── 1-one-password.sh
-│   └── 2-sync
-│       ├── 0-secrets.sh
-│       ├── 1-rc.sh
-│       └── 2-bin.sh
-├── server
-│   ├── bin                     <- server-side scripts (~/bin)
+│   └── 2-sync                   - bootstrap secrets & sync files to server
+│       ├── 0-secrets.sh         -- 1password service account
+│       ├── 1-rc.sh              -- sync server/home to ~
+│       └── 2-bin.sh             -- sync servier/bin to ~/bin
+├── server                     <<- gets synced to the server
+│   ├── bin                      - server-side scripts for ~/bin
 │   │   ├── deploy-stack
 │   │   ├── op-dotenv
 │   │   └── render-compose
-│   └── home                    <- server-side bash config
-│       ├── .bashrc
+│   └── home                     - server-side bash config
+│       ├── .bashrc                (make .env & ~/bin available by default w/ ssh)
 │       └── .profile
-├── stacks                      <- swarm stacks
-│   ├── registry
+├── stacks                     <<- swarm stacks
+│   ├── registry                 - private docker registry
 │   │   ├── .rsyncignore
 │   │   └── compose.yaml
-│   ├── traefik
+│   ├── traefik                  - load balancer & reverse proxy
 │   │   ├── .rsyncignore
 │   │   ├── compose.yaml
 │   │   ├── deploy-pre.sh
 │   │   └── ...
-│   └── {service}
+│   └── {service}                - any other service
 │       ├── .rsyncignore
 │       └── compose.yaml
 ├── swarm                      <- swarm initialisation scripts
