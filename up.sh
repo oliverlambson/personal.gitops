@@ -13,9 +13,8 @@ generate-config() {
 
 docker swarm init
 
-docker network create --driver overlay --attachable public
-docker network create --driver overlay --attachable private
-docker network create --driver overlay --attachable loki
+docker network create --driver overlay --subnet 10.0.0.0/24 --attachable public
+docker network create --driver overlay --subnet 10.0.1.0/24 --attachable private
 
 generate-config -f traefik/compose.yaml | docker stack deploy -d -c - traefik
 # generate-config -f observability/compose.yaml | docker stack deploy -d -c - observability

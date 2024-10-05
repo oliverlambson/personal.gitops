@@ -27,8 +27,7 @@ services:
     healthcheck:
       test: "curl -f localhost:3000/api/health || exit 1"
     networks:
-      - public
-      - loki
+      - private
 
   loki:
     image: grafana/loki:3.1.1
@@ -46,7 +45,7 @@ services:
     healthcheck:
       test: "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"
     networks:
-      - loki
+      - private
 
   alloy:
     image: grafana/alloy:v1.3.1
@@ -66,7 +65,6 @@ services:
         delay: 10s
         order: stop-first
     networks:
-      - loki
       - private
 
 volumes:
@@ -76,6 +74,4 @@ networks:
   public:
     external: true
   private:
-    external: true
-  loki:
     external: true

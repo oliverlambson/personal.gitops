@@ -32,7 +32,6 @@ services:
         - "traefik.http.routers.chat.tls.domains[0].main=chat.oliverlambson.com"
     networks:
       - public
-      - loki
 
 volumes:
   open-webui:
@@ -41,6 +40,4 @@ networks:
   public:
     external: true
   private:
-    external: true
-  loki:
     external: true

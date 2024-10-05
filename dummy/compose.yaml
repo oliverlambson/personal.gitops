@@ -26,13 +26,8 @@ services:
         - "traefik.http.routers.dummy.tls.domains[0].main=dummy.oliverlambson.com"
         # - "traefik.http.routers.dummy.tls.domains[0].sans=dummy.dev.v2.oliverlambson.com"
     networks:
-      - public
-      - loki
+      - private
 
 networks:
-  public:
-    external: true
   private:
-    external: true
-  loki:
     external: true

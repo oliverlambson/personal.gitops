@@ -9,7 +9,6 @@ docker swarm init
 
 docker network create --driver overlay --attachable public
 docker network create --driver overlay --attachable private
-docker network create --driver overlay --attachable loki
 
 docker stack deploy -d -c traefik/compose.yaml -c traefik/compose.dev.yaml traefik
 docker stack deploy -d -c observability/compose.yaml observability
