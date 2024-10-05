@@ -49,7 +49,7 @@ if [ -f "$d/deploy-pre.sh" ]; then
 		echo "Error: $d/deploy-pre.sh is not executable."
 		exit 1
 	fi
-	./deploy-pre.sh
+	"$d/deploy-pre.sh"
 fi
 render-compose -f "$d/compose.yaml" | docker stack deploy -d=false -c - "$stack"
 
