@@ -3,6 +3,8 @@
 Central configuration of my personal VPS deployment setup using docker swarm.
 Other deployments are managed in the app repos.
 
+![architecture](./static/architecture.png)
+
 ## Stacks TODO
 
 - [ ] traefik
