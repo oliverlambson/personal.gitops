@@ -1,7 +1,5 @@
 # personal.gitops
 
-> next up: cicd deployment of personal-site
-
 Central configuration of my personal VPS deployment setup using docker swarm.
 Other deployments are managed in the app repos.
 
@@ -9,7 +7,6 @@ Other deployments are managed in the app repos.
 
 - [ ] traefik
   - [x] localhost TLS
-  - [ ] base hostname with go template? (e.g. dev.oliverlambson.com vs oliverlambson.com) (could do with compose env vars)
   - [x] private/public services (kinda, with ipAllowList middleware)
   - [ ] private/public services with vpn
 - [x] registry
@@ -27,17 +24,17 @@ Other deployments are managed in the app repos.
 
 ## Deployment TODO
 
-- [ ] replace coolify for oliverlambson.com
+- [x] replace coolify for oliverlambson.com
   - [x] these services up
     - [x] traefik
     - [x] dummy
     - [x] personal-site
     - [x] chat (open-webui)
     - [x] registry
-  - [ ] cicd deployment of personal-site (build > push to registry > update stack definition > deploy stack)
+  - [x] cicd deployment of personal-site (build > push to registry > update stack definition > deploy stack)
     - [x] makefile deployment with docker save & scp
     - [x] makefile deployment with private registry
-    - [ ] cicd
+    - [x] cicd
   - [x] cicd deployment of personal.gitops?
 - [ ] infra with terraform/pulumi
   - [ ] cloudflare dns
