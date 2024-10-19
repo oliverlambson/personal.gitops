@@ -4,7 +4,7 @@ services:
   traefik:
     image: traefik:v3.1.6
     environment:
-      FORCE_DEPLOY: "blue"
+      FORCE_DEPLOY: "green"
     command:
       - "--configFile=/traefik.yaml"
     ports:
