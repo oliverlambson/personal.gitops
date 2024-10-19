@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail
 
 usage() {
 	cat <<EOF
@@ -49,7 +49,9 @@ if [ -f "$d/deploy-pre.sh" ]; then
 		echo "Error: $d/deploy-pre.sh is not executable."
 		exit 1
 	fi
-	"$d/deploy-pre.sh"
+	cd "$d"
+	"./deploy-pre.sh"
+	cd -
 fi
 render-compose -f "$d/compose.yaml" | docker stack deploy -d=false -c - "$stack"
 
