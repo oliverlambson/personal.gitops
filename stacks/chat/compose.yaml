@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   chat:
-    image: ghcr.io/open-webui/open-webui:0.3.35
+    image: ghcr.io/open-webui/open-webui:0.4.3
     environment:
       ENABLE_SIGNUP: "false" # change to false after admin created
       ENABLE_OLLAMA_API: "false"
