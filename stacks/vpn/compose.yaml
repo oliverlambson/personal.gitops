@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  coredns:
+    image: coredns/coredns:1.11.3
+    volumes:
+      - ./Corefile:/Corefile
+    networks:
+      private:
+        ipv4_address: 10.128.1.11
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+  wireguard:
+    image: linuxserver/wireguard:1.0.20210914
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Your/Timezone
+      # Optional settings
+      - SERVERURL=vpn.oliverlambson.com
+      - SERVERPORT=51820 # WireGuard port
+      - PEERS=1 # Number of clients
+      - PEERDNS=auto # DNS settings for peers
+      - INTERNAL_SUBNET=10.13.13.0/24 # VPN subnet
+    volumes:
+      - ./config:/config
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp" # is this necessary? can I route vpn through traefik too?
+    networks:
+      - private
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  private:
+    external: true
