@@ -6,8 +6,6 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
-      # middlewares:
-      #   - https-redirect@file
   websecure:
     address: ":443"
 
@@ -29,8 +27,8 @@ certificatesResolvers:
     acme:
       email: oliverlambson@gmail.com
       storage: acme.json
-      httpChallenge:
-        entryPoint: web
+      dnsChallenge:
+        provider: cloudflare
 
 log:
   level: INFO

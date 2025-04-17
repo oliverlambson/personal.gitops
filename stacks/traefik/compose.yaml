@@ -5,6 +5,7 @@ services:
     image: traefik:v3.1.6
     environment:
       FORCE_DEPLOY: "green"
+      CF_DNS_API_TOKEN: "${CF_DNS_API_TOKEN}"
     command:
       - "--configFile=/traefik.yaml"
     ports:
@@ -15,6 +16,7 @@ services:
       - "./traefik.yaml:/traefik.yaml:ro"
       - "./dynamic_conf/traefik_dynamic.yaml:/dynamic_conf/traefik_dynamic.yaml:ro"
       - "./acme.json:/acme.json"
+      - "./cloudflare:/cloudflare:ro"
     deploy:
       replicas: 1
       restart_policy:
