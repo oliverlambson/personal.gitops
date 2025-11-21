@@ -18,7 +18,7 @@ services:
     volumes:
       - "open-webui:/app/backend/data"
     deploy:
-      replicas: 1
+      replicas: 0
       restart_policy:
         condition: on-failure
       update_config:
@@ -41,7 +41,7 @@ services:
     ports:
       - 9099:9099
     environment:
-      PIPELINES_URLS: "https://github.com/open-webui/pipelines/blob/main/examples/pipelines/providers/anthropic_manifold_pipeline.py" 
+      PIPELINES_URLS: "https://github.com/open-webui/pipelines/blob/main/examples/pipelines/providers/anthropic_manifold_pipeline.py"
       PIPELINES_API_KEY: ${PIPELINES_API_KEY}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     volumes:
