@@ -21,10 +21,6 @@ tls:
       defaultGeneratedCert:
         resolver: letsencrypt
         domain:
-          main: "www.oliverlambson.com"
+          main: "oliverlambson.com"
           sans:
-            - "dummy.oliverlambson.com"
-            - "traefik.oliverlambson.com"
-            - "dev.oliverlambson.com"
-            - "registry.oliverlambson.com"
-            - "chat.oliverlambson.com"
+            - "*.oliverlambson.com"

@@ -5,6 +5,8 @@ services:
     image: traefik:v3.6.2
     environment:
       FORCE_DEPLOY: "green"
+      CF_API_EMAIL: ${CF_API_EMAIL}
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
     command:
       - "--configFile=/traefik.yaml"
     ports:

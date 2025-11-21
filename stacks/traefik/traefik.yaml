@@ -29,8 +29,12 @@ certificatesResolvers:
     acme:
       email: oliverlambson@gmail.com
       storage: acme.json
-      httpChallenge:
-        entryPoint: web
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 10
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
 
 log:
   level: INFO
